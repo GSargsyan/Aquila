@@ -1,0 +1,9 @@
+CREATE DATABASE "aquila";
+CREATE USER "aquila" WITH PASSWORD 'aquila2018';
+GRANT ALL PRIVILEGES ON DATABASE aquila to aquila;
+
+CREATE TABLE players (
+	id SERIAL,
+	username VARCHAR NOT NULL UNIQUE,
+	balance INT
+);

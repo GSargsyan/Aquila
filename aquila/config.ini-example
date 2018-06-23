@@ -1,5 +1,0 @@
-[db]
-host = localhost
-name = aquila
-user = aquila
-pass = {pwd}
