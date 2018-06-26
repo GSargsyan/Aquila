@@ -1,7 +1,7 @@
-from app.lib.db_table import DBTable
+from app.lib.table_view import TableView
 
 
-class Players(DBTable):
+class Players(TableView):
     def __init__(self):
         self.table_name = 'players'
         super().__init__()
