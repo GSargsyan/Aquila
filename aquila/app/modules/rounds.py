@@ -1,4 +1,4 @@
-from app.modules.players import Players
+from app import Players, Rooms
 
 class Rounds():
     pass

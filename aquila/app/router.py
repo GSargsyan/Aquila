@@ -1,17 +1,26 @@
 from flask import Blueprint, render_template, request
-
-from app.modules.players import Players
-from app.modules.bets import Bets
-from app.modules.rounds import Rounds
-from app.modules.rooms import Rooms
+from app.modules.exceptions import ValidationError
+from app import Players
 
 router = Blueprint('router', __name__,
         template_folder='templates')
 
 @router.route('/')
 def index():
-    return 'asd' # render_template('login.html')
+    return render_template('home.html')
 
-@router.route('/login', methods=['POST'])
+@router.route('/login', methods=['GET', 'POST'])
 def login():
-    pass
+    return render_template('login.html')
+
+@router.route('/register', methods=['POST'])
+def register():
+    uname = request.form['username']
+    pwd = request.form['password']
+
+    try:
+        Players.register_player(uname, pwd)
+    except ValidationError as ve:
+        return render_template('login.html', error=str(ve))
+
+    return render_template('home.html')

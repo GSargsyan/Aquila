@@ -2,13 +2,15 @@
 	<body>
 		<h1>Login page</h1>
 
-		<form action="{{ url_for('login') }}" method="post">
+		<form action="{{ url_for('router.login') }}" method="post">
+			<p>Login</p>
 			<input name="username" type="text">
 			<input name="password" type="password">
 			<input type="submit">
 		</form>
 
-		<form action="{{ url_for('register') }}" method="post">
+		<form action="{{ url_for('router.register') }}" method="post">
+			<p>Register</p>
 			<input name="username" type="text">
 			<input name="password" type="password">
 			<input type="submit">

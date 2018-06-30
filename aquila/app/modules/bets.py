@@ -1,5 +1,4 @@
-from app.modules.players import Players
-from app.modules.rounds import Rounds
+from app import Players, Rounds
 
 
 class BetTypes:

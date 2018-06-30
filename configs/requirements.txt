@@ -2,3 +2,4 @@ uwsgi
 flask
 psycopg2
 passlib
+geocoder
