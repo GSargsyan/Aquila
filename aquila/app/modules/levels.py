@@ -1,0 +1,2 @@
+class Levels:
+    pass
