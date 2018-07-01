@@ -4,18 +4,15 @@ from flask import g, redirect, session, request
 from app import Players
 
 
-REQ_AUTH_URLS = ('/game', '/home')
-
-
-def login(pid):
-    session['pid'] = pid
+REQ_AUTH_URLS = ('/game')
 
 
 def authorize():
-    if request.url not in REQ_AUTH_URLS:
+    if 'pid' in session:
+        g.player = Players.find_by_id(session['pid'])
         return True
-    if 'pid' not in session:
+
+    if request.path in REQ_AUTH_URLS:
         return False
 
-    g.player = Players.find_by_id(session['pid'])
     return True

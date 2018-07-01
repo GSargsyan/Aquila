@@ -21,12 +21,13 @@ def throw_ve(msg):
     raise ValidationError(msg)
 
 
-def encrypt_pwd(pwd):
-    return pbkdf2_sha256.encrypt(pwd, rounds=sec_conf['pass_rounds'])
+def hash_pwd(pwd):
+    return pbkdf2_sha256.using(rounds=sec_conf['pass_rounds'],
+            salt_size=sec_conf['salt_size']).hash(pwd)
 
 
-def verify_pwd(pwd, encrypted):
-    return pbkdf2_sha256.verify(encrypted, pwd)
+def verify_pwd(pwd, hashed):
+    return pbkdf2_sha256.verify(pwd, hashed)
 
 
 def is_latin(s):

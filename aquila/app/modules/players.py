@@ -1,5 +1,7 @@
+from flask import request, session, g
+
 from app.lib.table_view import TableView
-from app.lib.utils import is_latin, throw_ve, now
+from app.lib.utils import is_latin, throw_ve, now, hash_pwd, verify_pwd, pp
 from app import Countries, Levels
 
 
@@ -21,7 +23,7 @@ class Players(TableView):
 		'chat_messages_count': 0,
 		'bets_count': 0,
 		'bets_won_count': 0,
-		'country_id': None,
+		'country_id': Countries.from_ip(request.remote_addr),
 		'registered_date': now(),
 		'settings': None,
 		'is_online': True
@@ -30,6 +32,20 @@ class Players(TableView):
 
     def user_exists(self, uname):
         return self.find_by_field('username', uname, fields=['id']) is not None
+
+    def _session_login(self, pid):
+        session['pid'] = pid
+        g.player = self.find_by_id(session['pid'])
+
+    def login_player(self, uname, pwd):
+        player = self.find(['id', 'password'],
+                'username=%(uname)s', {'uname': uname})
+
+        if player is None or not verify_pwd(pwd, player.password):
+            return False
+
+        self._session_login(player.id)
+        return True
 
     def validate_uname(self, uname):
         # Contains valid characters
@@ -65,9 +81,10 @@ class Players(TableView):
 
         vals = self.initial_values()
         vals['username'] = uname
-        vals['password'] = pwd
+        vals['password'] = hash_pwd(pwd)
 
         pid = self.insert(vals, ret='id')
+        self._session_login(pid)
 
 
 class PlayerRelations:

@@ -13,6 +13,7 @@ db_conf = dict(config.items('db'))
 sec_conf = dict(config.items('security'))
 
 db = DB(db_conf['host'], db_conf['user'], db_conf['pass'], db_conf['name'])
+app.secret_key = sec_conf['session_key']
 
 from app.modules.countries import Countries
 Countries = Countries()
@@ -34,4 +35,4 @@ from app.modules.auth import authorize
 @app.before_request
 def before_request():
     if not authorize():
-        return redirect(url_for('login'))
+        return redirect(url_for('router.home'))
