@@ -2,6 +2,10 @@
 -- CREATE USER "aquila" WITH PASSWORD 'aquila2018';
 -- GRANT ALL PRIVILEGES ON DATABASE aquila TO aquila;
 
+/*
+Index candidates:
+rooms.joined_date
+*/
 
 CREATE TABLE levels (
 	level SMALLINT PRIMARY KEY,
@@ -11,6 +15,11 @@ CREATE TABLE levels (
 CREATE TABLE countries (
 	id SMALLINT PRIMARY KEY,
 	name VARCHAR
+);
+
+CREATE TABLE rooms (
+	id SERIAL PRIMARY KEY,
+	player_id_list INTEGER ARRAY
 );
 
 CREATE TYPE PLAYER_STATUS AS ENUM ('alive', 'suspended');
@@ -33,6 +42,7 @@ CREATE TABLE players (
 	country_id SMALLINT REFERENCES countries,
 	registered_date TIMESTAMP,
 	settings JSON,
+	room_id SMALLINT REFERENCES rooms,
 	is_online BOOLEAN
 );
 
@@ -70,12 +80,6 @@ CREATE TABLE action_log (
 	date TIMESTAMP
 );
 
-CREATE TABLE rooms (
-	id SERIAL PRIMARY KEY,
-	player_id_list INTEGER ARRAY,
-	is_running BOOLEAN
-);
-
 CREATE TABLE rounds (
 	id SERIAL PRIMARY KEY,
 	room_id INT REFERENCES rooms,
@@ -93,10 +97,11 @@ CREATE TABLE chat_messages (
 );
 
 CREATE TABLE room_log (
+	id SERIAL PRIMARY KEY,
 	room_id INT REFERENCES rooms, 
 	player_id INT REFERENCES players,
-	joined_date TIMESTAMP,
-	left_date TIMESTAMP
+	entry_date TIMESTAMP,
+	leave_date TIMESTAMP
 );
 
 CREATE TABLE bet_types (
@@ -126,3 +131,12 @@ CREATE TABLE ip_blocks (
 	unblock_date TIMESTAMP,
 	reason SMALLINT
 );
+
+
+-- Static content
+
+-- Insert 1000 rooms
+INSERT INTO rooms (player_id_list) VALUES ('{}');
+INSERT INTO rooms (player_id_list)
+SELECT tmp.player_id_list FROM
+(SELECT player_id_list, generate_series(1, 999) FROM rooms) tmp;

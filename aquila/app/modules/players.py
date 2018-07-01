@@ -2,7 +2,7 @@ from flask import request, session, g
 
 from app.lib.table_view import TableView
 from app.lib.utils import is_latin, throw_ve, now, hash_pwd, verify_pwd, pp
-from app import Countries, Levels
+from app import Countries, Levels, Rooms
 
 
 class Players(TableView):
@@ -87,6 +87,23 @@ class Players(TableView):
         self._session_login(pid)
 
 
+# Methods in Player class assume 'player' is in g
+class Player(TableView):
+    def __init__(self):
+        self.table_name = 'players'
+        super().__init__()
+
+    def join_some_room(self):
+        pid = g.player.id
+        room_id = Rooms.id_by_max_players()
+        self.update_by_id({'room_id': room_id}, pid)
+        Rooms.add_player(room_id, pid)
+        return room_id
+
+    def change_room(self):
+        pass
+
+
 class PlayerRelations:
     pass
 
@@ -96,8 +113,4 @@ class PlayerBlocks:
 
 
 class Feedbacks:
-    pass
-
-
-class ActionLogger:
     pass

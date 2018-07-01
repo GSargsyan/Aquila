@@ -19,10 +19,13 @@ from app.modules.countries import Countries
 Countries = Countries()
 from app.modules.levels import Levels
 Levels = Levels()
-from app.modules.players import Players
-Players = Players()
+from app.modules.logger import RoomLogger, ActionLogger
+RoomLogger = RoomLogger()
 from app.modules.rooms import Rooms
 Rooms = Rooms()
+from app.modules.players import Players, Player
+Players = Players()
+Player = Player()
 from app.modules.rounds import Rounds
 Rounds = Rounds()
 from app.modules.bets import Bets

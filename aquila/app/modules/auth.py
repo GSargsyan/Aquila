@@ -1,5 +1,4 @@
-from functools import wraps
-from flask import g, redirect, session, request
+from flask import g, session, request
 
 from app import Players
 
