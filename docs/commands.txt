@@ -1,0 +1,7 @@
+To kill uwsgi app
+sudo pkill -f uwsgi -9
+
+To start the uwsgi
+sudo uwsgi --ini /var/www/Aquila/configs/uwsgi.ini --daemonize /var/www/Aquila/aquila/var/log/uwsgi.log
+
+

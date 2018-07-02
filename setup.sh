@@ -58,9 +58,3 @@ prog_exists pip
 prog_exists uwsgi
 prog_exists psql
 prog_exists git
-
-# sudo uwsgi --ini /var/www/Aquila/configs/uwsgi.ini --daemonize /var/www/Aquila/aquila/var/log/uwsgi.log
-
-# dnf install postgresql10-server postgresql10
-
-# sudo pkill -f uwsgi -9

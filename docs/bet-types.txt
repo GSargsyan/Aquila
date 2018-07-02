@@ -1,0 +1,23 @@
+id name				payout
+1. red-black		2
+2. odd-even			2
+3. high-low			2
+4. column			3
+5. dozens			3
+6. corner			9
+7. split			18
+8. straight			36
+
+1. Weather the number will be red or black
+2. Weather the number will be odd or even
+3. Weather the number will be above 18 or below
+
+4. Bet on the outcome being from one of the three columns
+Column 1: 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34
+Column 2: 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35
+Column 3: 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36
+
+5. Bet on the outcome being from 1-12 or 13-24 or 25-36
+6. Bet on a corner including 4 numbers.
+7. Bet on a line sperating 2 numbers. Includes 2 numbers.
+8. Bet on one number.

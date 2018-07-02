@@ -21,13 +21,9 @@ class Rooms(TableView):
         return self.find(['id'], order_by='CARDINALITY(player_id_list) DESC').id
 
     def add_player(self, room_id, pid):
-        # TODO: find a way to concat in pscyopg2
-        players_list = self.find_by_id(room_id,
-                fields=['player_id_list']).player_id_list
-        players_list.append(pid)
-        self.update_by_id(
-                {'player_id_list': players_list},
-                room_id)
+        self.link.execute("UPDATE {} SET player_id_list=player_id_list || %(pid)s"
+                          " WHERE id=%(rid)s".format(self.table_name),
+                          {'pid': pid, 'rid': room_id})
 
         # RoomLogger.log_entry(room_id, pid)
         RoomLogger.log_leave(room_id, pid)
