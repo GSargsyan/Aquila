@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from app.modules.exceptions import ValidationError
-from app import Players, Player
+from app import Players, Player, Round
 
 router = Blueprint('router', __name__,
         template_folder='templates')
@@ -35,7 +35,13 @@ def register():
 
     return redirect(url_for('router.home'))
 
+
 @router.route('/game', methods=['GET'])
 def game():
     room_id = Player.join_some_room()
     return render_template('game.html', room_id=room_id)
+
+
+@router.route('/checkup', methods=['POST'])
+def checkup():
+    rnd = Round.current()

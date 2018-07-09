@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 
-from flask import Flask, redirect, url_for, request
+from flask import Flask, redirect, url_for, request, g, session
+from uwsgidecorators import timer
 
 from app.lib.db import DB
 
@@ -26,14 +27,28 @@ Rooms = Rooms()
 from app.modules.players import Players, Player
 Players = Players()
 Player = Player()
-from app.modules.rounds import Rounds
+from app.modules.rounds import Rounds, Round
 Rounds = Rounds()
 from app.modules.bets import Bets
 Bets = Bets()
 from app.router import router
 app.register_blueprint(router)
 
-from app.modules.auth import authorize
+@timer(30)
+def check_afk_players(signal):
+    Players.remove_afks()
+
+REQ_AUTH_URLS = ('/game')
+
+def authorize():
+    if 'pid' in session:
+        g.player = Players.find_by_id(session['pid'])
+        return True
+
+    if request.path in REQ_AUTH_URLS:
+        return False
+
+    return True
 
 @app.before_request
 def before_request():

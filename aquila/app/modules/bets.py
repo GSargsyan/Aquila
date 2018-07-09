@@ -1,9 +1,10 @@
+from app.lib.table_view import TableView
 from app import Players, Rounds
 
 
-class BetTypes:
+class Bets:
     pass
 
 
-class Bets:
+class BetTypes:
     pass

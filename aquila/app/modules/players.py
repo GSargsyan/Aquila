@@ -86,6 +86,16 @@ class Players(TableView):
         pid = self.insert(vals, ret='id')
         self._session_login(pid)
 
+    def remove_afks(self, pids):
+        afks = Players.all(['id', 'room_id'],
+                "is_online = TRUE AND"
+                "AND NOW() - last_checkup < INTERVAL '30 SECONDS'"
+                "AND room_id IS NOT NULL")
+
+        for afk in afks:
+            Rooms.remove_player(afk.room_id, afk.id)
+            self.update_by_id({'room_id': None}, afk.id)
+
 
 # Methods in Player class assume 'player' is in g
 class Player(TableView):
@@ -93,16 +103,25 @@ class Player(TableView):
         self.table_name = 'players'
         super().__init__()
 
+    def quit_any_room(self):
+        room_id = g.player.room_id
+        pid = g.player.id
+
+        if room_id is not None:
+            Rooms.remove_player(room_id, pid)
+            self.update_by_id({'room_id': None}, pid)
+
     def join_some_room(self):
+        # Before joining, quit any room if already in
+        self.quit_any_room()
+
         pid = g.player.id
         room_id = Rooms.id_by_max_players()
         self.update_by_id({'room_id': room_id}, pid)
+
         Rooms.add_player(room_id, pid)
+
         return room_id
-
-    def change_room(self):
-        pass
-
 
 class PlayerRelations:
     pass
