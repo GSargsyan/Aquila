@@ -27,14 +27,14 @@ Rooms = Rooms()
 from app.modules.players import Players, Player
 Players = Players()
 Player = Player()
-from app.modules.rounds import Rounds, Round
+from app.modules.rounds import Rounds
 Rounds = Rounds()
 from app.modules.bets import Bets
 Bets = Bets()
 from app.router import router
 app.register_blueprint(router)
 
-@timer(30)
+@timer(5, target='mule')
 def check_afk_players(signal):
     Players.remove_afks()
 

@@ -6,13 +6,20 @@ function byId(id) {
 	return document.getElementById(id);
 }
 
-function httpPost() {
+function httpPost(url, payload, callback, method, async) {
+	if (method === undefined)
+		method = 'POST';
+	if (async === undefined)
+		async = true;
+
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			cl('inside')
+			cl(this.response);
+			if (callback) callback();
 		}
 	};
-	xhttp.open("POST", "/checkup", true);
-	xhttp.send();
+	
+	xhttp.open(method, url, async);
+	xhttp.send(JSON.stringify(payload));
 }

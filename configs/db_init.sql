@@ -43,6 +43,7 @@ CREATE TABLE players (
 	registered_date TIMESTAMP,
 	settings JSON,
 	room_id SMALLINT REFERENCES rooms,
+	last_checkup TIMESTAMP,
 	is_online BOOLEAN
 );
 

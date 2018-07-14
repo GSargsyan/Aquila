@@ -6,6 +6,8 @@ from app import Countries, Levels, Rooms
 
 
 class Players(TableView):
+    TIMEOUT = 30 # seconds
+
     def __init__(self):
         self.table_name = 'players'
         super().__init__()
@@ -14,7 +16,7 @@ class Players(TableView):
         return {
 		'balance': 0,
 		'demo_balance': 10,
-		'level': None,
+		'level_id': None,
 		'exp': 0,
 		'wagered': 0,
 		'won': 0,
@@ -26,6 +28,8 @@ class Players(TableView):
 		'country_id': Countries.from_ip(request.remote_addr),
 		'registered_date': now(),
 		'settings': None,
+                'room_id': None,
+                'last_checkup': None,
 		'is_online': True
                 }
 
@@ -86,12 +90,13 @@ class Players(TableView):
         pid = self.insert(vals, ret='id')
         self._session_login(pid)
 
-    def remove_afks(self, pids):
-        afks = Players.all(['id', 'room_id'],
-                "is_online = TRUE AND"
-                "AND NOW() - last_checkup < INTERVAL '30 SECONDS'"
-                "AND room_id IS NOT NULL")
+    def remove_afks(self):
+        afks = self.all(['id', 'room_id'],
+                "is_online = TRUE "
+                "AND NOW() - last_checkup > INTERVAL '{} SECONDS' "
+                "AND room_id IS NOT NULL".format(self.TIMEOUT))
 
+        pp(afks)
         for afk in afks:
             Rooms.remove_player(afk.room_id, afk.id)
             self.update_by_id({'room_id': None}, afk.id)
@@ -117,11 +122,14 @@ class Player(TableView):
 
         pid = g.player.id
         room_id = Rooms.id_by_max_players()
-        self.update_by_id({'room_id': room_id}, pid)
+        self.update_by_id({'room_id': room_id, 'last_checkup': now()}, pid)
 
         Rooms.add_player(room_id, pid)
 
         return room_id
+
+    def is_logged_in(self):
+        return 'pid' in session
 
 class PlayerRelations:
     pass
