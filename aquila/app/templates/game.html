@@ -7,13 +7,18 @@
 
 		<script type="text/javascript"
 			src="{{ url_for('static', filename='utils.js') }}"></script>
-		<script type="text/javascript"
-			src="{{ url_for('static', filename='game.js') }}"></script>
 	</head>
 	<body>
 		<h1>Game page</h1>
 		{% if room_id %}
 		<p>You joined room: {{ room_id }}</p>
 		{% endif %}
+		<br><br><br><br>
+		<div>
+			<span>Till starting: </span>
+			<span id="till_round_start">0</span>
+		</div>
 	</body>
+	<script type="text/javascript"
+		src="{{ url_for('static', filename='game.js') }}"></script>
 </html>

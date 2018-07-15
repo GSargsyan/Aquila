@@ -2,18 +2,18 @@ from flask import request, session, g
 
 from app.lib.table_view import TableView
 from app.lib.utils import is_latin, throw_ve, now, hash_pwd, verify_pwd, pp
-from app import Countries, Levels, Rooms
+from app import Countries, Levels, Rooms, game_conf
 
 
 class Players(TableView):
-    TIMEOUT = 30 # seconds
-
     def __init__(self):
         self.table_name = 'players'
         super().__init__()
 
     def initial_values(self):
         return {
+		'username': None,
+		'password': None,
 		'balance': 0,
 		'demo_balance': 10,
 		'level_id': None,
@@ -93,10 +93,9 @@ class Players(TableView):
     def remove_afks(self):
         afks = self.all(['id', 'room_id'],
                 "is_online = TRUE "
-                "AND NOW() - last_checkup > INTERVAL '{} SECONDS' "
-                "AND room_id IS NOT NULL".format(self.TIMEOUT))
+                "AND NOW() - last_checkup > INTERVAL '{} SECONDS'"
+                "AND room_id IS NOT NULL".format(game_conf['player_timeout']))
 
-        pp(afks)
         for afk in afks:
             Rooms.remove_player(afk.room_id, afk.id)
             self.update_by_id({'room_id': None}, afk.id)

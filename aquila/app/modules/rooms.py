@@ -36,6 +36,18 @@ class Rooms(TableView):
 
         RoomLogger.log_leave(room_id, pid)
 
+    def run_awaiting(self):
+        return self.update({'is_running': True},
+                "is_running = FALSE AND "
+                "ARRAY_LENGTH(player_id_list, 1) > 0")
+    
+    def all_running(self):
+        return self.all(['id'], 'is_running = TRUE')
+
+    def close_empty(self):
+        self.update({'is_running': False}, "is_running = TRUE AND "
+                                           "ARRAY_LENGTH(player_id_list, 1) IS NULL")
+
 
 class ChatMessages:
     pass

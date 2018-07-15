@@ -19,7 +19,8 @@ CREATE TABLE countries (
 
 CREATE TABLE rooms (
 	id SERIAL PRIMARY KEY,
-	player_id_list INTEGER ARRAY
+	player_id_list INTEGER ARRAY,
+	is_running BOOLEAN
 );
 
 CREATE TYPE PLAYER_STATUS AS ENUM ('alive', 'suspended');
@@ -129,14 +130,18 @@ CREATE TABLE ip_blocks (
 	reason SMALLINT
 );
 
+-- Indices
+CREATE INDEX rooms_is_running
+ON rooms (is_running);
+
 
 -- Static content
 
 -- Insert 1000 rooms
-INSERT INTO rooms (player_id_list) VALUES ('{}');
-INSERT INTO rooms (player_id_list)
-SELECT tmp.player_id_list FROM
-(SELECT player_id_list, generate_series(1, 999) FROM rooms) tmp;
+INSERT INTO rooms (player_id_list, is_running) VALUES ('{}', FALSE);
+INSERT INTO rooms (player_id_list, is_running)
+SELECT tmp.player_id_list, tmp.is_running FROM
+(SELECT player_id_list, is_running, generate_series(1, 999) FROM rooms) tmp;
 
 INSERT INTO bet_types VALUES
 ('red', '{1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36}', 2),

@@ -1,4 +1,5 @@
 import pprint
+import time                                                
 from datetime import datetime
 
 from passlib.hash import pbkdf2_sha256
@@ -37,5 +38,20 @@ def is_latin(s):
         return False
     return True
 
+
 def now():
     return datetime.now()
+
+
+def secs_passed(d):
+    return (now() - d).total_seconds()
+
+
+def timeit(method):
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+        print('%r (%r, %r) %2.5f sec' % (method.__name__, args, kw, te-ts))
+        return result
+    return timed

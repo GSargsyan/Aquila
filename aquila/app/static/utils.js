@@ -15,8 +15,7 @@ function httpPost(url, payload, callback, method, async) {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			cl(this.response);
-			if (callback) callback();
+			if (callback) callback(this.response);
 		}
 	};
 	

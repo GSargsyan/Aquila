@@ -2,8 +2,8 @@ import json
 
 from flask import Blueprint, render_template, request, redirect, url_for, g, session
 from app.modules.exceptions import ValidationError
-from app import Players, Player, Rounds
-from app.lib.utils import now, pp
+from app import Players, Player, Rounds, Rooms, game_conf
+from app.lib.utils import now, pp, secs_passed
 
 router = Blueprint('router', __name__,
         template_folder='templates')
@@ -50,17 +50,17 @@ def checkup():
     if not Player.is_logged_in():
         return json.dumps({'status': 2})
 
-    rnd = Rounds.curr_by_room_id(g.player.room_id)
+    rnd = Rounds.current_by_room_id(g.player.room_id)
     if rnd is None:
         return json.dumps({'status': 3})
+    left = int(game_conf['rounds_interval']) - secs_passed(rnd.start_date)
 
     Players.update_by_id({'last_checkup': now()}, g.player.id)
-    return json.dumps({'status': 1, 'round': rnd})
+    return json.dumps({'status': 1, 'left': left})
 
 
-@router.route('/init-room', methods=['POST'])
-def init_room():
-    # TODO: FINISH
+@router.route('/bet', methods=['POST'])
+def bet():
     pass
 
 # FOR TESTING ONLY
