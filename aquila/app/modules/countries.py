@@ -1,10 +1,11 @@
 import geocoder
 
+from app.lib.table_view import TableView
 
-class Countries:
-    def name_to_id(self, country):
-        pass
 
-    def from_ip(self, ip):
-        info = geocoder.freegeoip(ip)
-        return None
+class Countries(TableView):
+    def __init__(self):
+        self.table_name = 'countries'
+
+    def iso2_from_ip(self, ip):
+        return geocoder.ip(ip).country

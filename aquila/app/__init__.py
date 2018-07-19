@@ -21,8 +21,9 @@ from app.modules.countries import Countries
 Countries = Countries()
 from app.modules.levels import Levels
 Levels = Levels()
-from app.modules.logger import RoomLogger, ActionLogger
+from app.modules.logger import RoomLogger, LoginLogger
 RoomLogger = RoomLogger()
+LoginLogger = LoginLogger()
 from app.modules.rooms import Rooms
 Rooms = Rooms()
 from app.modules.players import Players, Player

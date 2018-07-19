@@ -21,5 +21,16 @@ class RoomLogger(TableView):
         self.update_by_id({'leave_date': now()}, last_entry_id)
 
 
-class ActionLogger:
-    pass
+class LoginLogger(TableView):
+    def __init__(self):
+        self.table_name = 'login_log'
+        super().__init__()
+
+    def log(self, pid, action, ip):
+        self.insert({'player_id': pid, 'action': action, 'ip': ip, 'date': now()}
+
+    def log_login(self, pid, ip):
+        self.log(pid, 'login', ip)
+
+    def log_logout(self, pid, ip):
+        self.log(pid, 'logout', ip)

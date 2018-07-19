@@ -25,7 +25,7 @@ class Players(TableView):
 		'chat_messages_count': 0,
 		'bets_count': 0,
 		'bets_won_count': 0,
-		'country_id': Countries.from_ip(request.remote_addr),
+		'country_id': Countries.iso2_from_ip(request.remote_addr),
 		'registered_date': now(),
 		'settings': None,
                 'room_id': None,
