@@ -20,6 +20,7 @@ function httpPost(url, payload, callback, method, async) {
 	};
 	
 	xhttp.open(method, url, async);
+	xhttp.setRequestHeader("Content-Type", "application/json");
 	xhttp.send(JSON.stringify(payload));
 }
 

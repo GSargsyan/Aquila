@@ -1,3 +1,5 @@
+from flask import request
+
 from app.lib.table_view import TableView
 from app.lib.utils import now
 
@@ -26,11 +28,11 @@ class LoginLogger(TableView):
         self.table_name = 'login_log'
         super().__init__()
 
-    def log(self, pid, action, ip):
+    def log(self, pid, action, ip=None):
         self.insert({'player_id': pid, 'action': action, 'ip': ip, 'date': now()})
 
-    def log_login(self, pid, ip):
-        self.log(pid, 'login', ip)
+    def log_login(self, pid):
+        self.log(pid, 'login', request.remote_addr)
 
-    def log_logout(self, pid, ip):
-        self.log(pid, 'logout', ip)
+    def log_logout(self, pid):
+        self.log(pid, 'logout')

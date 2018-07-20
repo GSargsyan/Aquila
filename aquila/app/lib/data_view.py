@@ -167,9 +167,7 @@ class DataView(object):
     #
     def update(self, values, where=True, condition={}):
         field_list = ["%s=%%(%s)s" % (key, key) for key in values]
-        if (len(field_list) == 0):
-            return False
-        values = dict(list(values.items()) + list(condition.items()))
+        values = {**values, **condition}
 
         query = self.link.update % \
             (self.table_name, ", " . join(field_list), where)
@@ -180,6 +178,18 @@ class DataView(object):
         else:
             self.clear()
             return True
+
+    #
+    # SQL update function which can use existing values. eg. a = a + 1
+    #
+    # @param  dict    values  dictionary of values to be updated, eg. {"id": 1}
+    # @param  string  where   query conditions
+    #
+    def update_by_existing(self, values, where=True, condition={}):
+        field_list = ', '.join([k + '=' + v for k, v in values.items()])
+        values = {**values, **condition}
+        self.link.execute(self.link.update % \
+                (self.table_name, field_list, where), values)
 
     #
     # SQL delete function

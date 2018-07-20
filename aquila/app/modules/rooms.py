@@ -21,18 +21,14 @@ class Rooms(TableView):
         return self.find(['id'], order_by='CARDINALITY(player_id_list) DESC').id
 
     def add_player(self, room_id, pid):
-        self.link.execute("UPDATE {} SET player_id_list = array_append"
-                          "(player_id_list, %(pid)s)"
-                          " WHERE id=%(rid)s".format(self.table_name),
-                          {'pid': pid, 'rid': room_id})
+        vals = {'player_id_list': "array_append(player_id_list, %(pid)s)"}
+        self.update_by_existing(vals, 'id=%(rid)s', {'pid': pid, 'rid': room_id})
 
         RoomLogger.log_entry(room_id, pid)
 
     def remove_player(self, room_id, pid):
-        self.link.execute("UPDATE {} SET player_id_list = array_remove"
-                          "(player_id_list, %(pid)s)"
-                          " WHERE id=%(rid)s".format(self.table_name),
-                          {'pid': pid, 'rid': room_id})
+        vals = {'player_id_list': "array_remove(player_id_list, %(pid)s)"}
+        self.update_by_existing(vals, 'id=%(rid)s', {'rid': room_id, 'pid': pid})
 
         RoomLogger.log_leave(room_id, pid)
 

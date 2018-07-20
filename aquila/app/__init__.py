@@ -14,6 +14,16 @@ db_conf = dict(config.items('db'))
 sec_conf = dict(config.items('security'))
 game_conf = dict(config.items('game'))
 
+sec_conf['pass_rounds'] = int(sec_conf['pass_rounds'])
+sec_conf['salt_size'] = int(sec_conf['salt_size'])
+
+game_conf['max_anim_time'] = int(game_conf['max_anim_time'])
+game_conf['rounds_interval'] = int(game_conf['rounds_interval'])
+game_conf['bet_timeout'] = int(game_conf['bet_timeout'])
+game_conf['player_timeout'] = int(game_conf['player_timeout'])
+game_conf['initial_demo_bal'] = int(game_conf['initial_demo_bal'])
+
+
 db = DB(db_conf['host'], db_conf['user'], db_conf['pass'], db_conf['name'])
 app.secret_key = sec_conf['session_key']
 
@@ -54,9 +64,11 @@ def checkup_rooms(signal):
         if not Rounds.has_room_running(room.id):
             Rounds.init_in_room(room.id)
 
-    # End late rounds, that didn't end
-    # because a player bet request is late. 
-    Rounds.end_late_rounds()
+    # End awaiting rounds
+    awaiting = Rounds.awaiting_rounds()
+    for rnd in awaiting:
+        Rounds.end_round(rnd.id)
+        Bets.commit_round_bets(rnd.id)
 
 
 REQ_AUTH_URLS = ('/game')

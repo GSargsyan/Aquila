@@ -13,10 +13,22 @@
 		{% if room_id %}
 		<p>You joined room: {{ room_id }}</p>
 		{% endif %}
-		<br><br><br><br>
+		<br><br>
+		<h3>Balance: {{ balance }}<h3>
+		<br><br>
 		<div>
 			<span>Till starting: </span>
-			<span id="till_round_start">0</span>
+			<span id="till-round-start">0</span>
+		</div>
+		<br><br>
+		<div>
+			<p>Board</p>
+			{% for n in range(37) %}
+			<input id="str-{{ n }}" type="button" value="{{ n }}">
+			{% endfor %}
+			<br><br>
+			<input id="red" type="button" value="red">
+			<input id="black" type="button" value="black">
 		</div>
 		<br><br><br><br>
 		<div>

@@ -2,7 +2,7 @@ from flask import request, session, g
 
 from app.lib.table_view import TableView
 from app.lib.utils import is_latin, throw_ve, now, hash_pwd, verify_pwd, pp
-from app import Countries, Levels, Rooms, game_conf
+from app import Countries, Levels, Rooms, LoginLogger, game_conf
 
 
 class Players(TableView):
@@ -15,7 +15,7 @@ class Players(TableView):
 		'username': None,
 		'password': None,
 		'balance': 0,
-		'demo_balance': 10,
+		'demo_balance': game_conf['initial_demo_bal'],
 		'level_id': None,
 		'exp': 0,
 		'wagered': 0,
@@ -49,6 +49,7 @@ class Players(TableView):
             return False
 
         self._session_login(player.id)
+        LoginLogger.log_login(player.id)
         return True
 
     def validate_uname(self, uname):
@@ -89,16 +90,36 @@ class Players(TableView):
 
         pid = self.insert(vals, ret='id')
         self._session_login(pid)
+        LoginLogger.log_login(player.id)
 
     def remove_afks(self):
         afks = self.all(['id', 'room_id'],
                 "is_online = TRUE "
-                "AND NOW() - last_checkup > INTERVAL '{} SECONDS'"
-                "AND room_id IS NOT NULL".format(game_conf['player_timeout']))
+                "AND NOW() - last_checkup > INTERVAL '%(tout)s SECONDS'"
+                "AND room_id IS NOT NULL",
+                {'tout': game_conf['player_timeout']})
 
         for afk in afks:
             Rooms.remove_player(afk.room_id, afk.id)
             self.update_by_id({'room_id': None}, afk.id)
+
+    def change_balance(self, pid, which, op, val):
+        vals = {which: which + op + str(val)}
+        self.update_by_existing(vals, "id={}".format(pid))
+
+    def add_bet_stats(self, pid, amount, won):
+        amt_str = str(amount)
+        vals = {}
+
+        vals['wagered'] = 'wagered + ' + amt_str
+        vals['bets_count'] = 'bets_count + 1'
+        if won:
+            vals['won'] = 'won + ' + amt_str
+            vals['bets_won_count'] = 'bets_won_count + 1'
+        else:
+            vals['lost'] = 'lost + ' + amt_str
+
+        self.update_by_existing(vals, "id={}".format(pid))
 
 
 # Methods in Player class assume 'player' is in g
@@ -129,6 +150,15 @@ class Player(TableView):
 
     def is_logged_in(self):
         return 'pid' in session
+
+    def are_bets_real(self):
+        # Demo balance or real balance
+        return False
+
+    def get_balance(self):
+        return g.player.balance if self.are_bets_real() \
+                else g.player.demo_balance
+
 
 class PlayerRelations:
     pass
