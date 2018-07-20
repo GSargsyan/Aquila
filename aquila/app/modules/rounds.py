@@ -46,8 +46,4 @@ class Rounds(TableView):
             "AND (end_date IS NULL OR NOW() - end_date < "
             "INTERVAL '{} SECONDS')".format(game_conf['max_anim_time']),
                 {'rid': room_id}, 'start_date DESC')
-        print(running)
         return running is not None
-
-        return last_in_room is not None and (last_in_room.end_date is None
-                or last_in_room.end_date )

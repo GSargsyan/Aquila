@@ -1,5 +1,4 @@
 #!/bin/bash
-
 echo -e "\n";
 echo " *****************************************************************";
 echo "      ___       ______      __    __   __   __           ___      ";
@@ -58,3 +57,5 @@ prog_exists pip
 prog_exists uwsgi
 prog_exists psql
 prog_exists git
+prog_exists node
+prog_exists npm

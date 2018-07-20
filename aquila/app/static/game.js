@@ -1,5 +1,4 @@
 function checkup(response) {
-	cl(response);
 	if (response.status != 1) {
 		return;
 	}

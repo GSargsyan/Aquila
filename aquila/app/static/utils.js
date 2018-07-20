@@ -22,3 +22,7 @@ function httpPost(url, payload, callback, method, async) {
 	xhttp.open(method, url, async);
 	xhttp.send(JSON.stringify(payload));
 }
+
+function newElem(tag) {
+	return document.createElement(tag);
+}

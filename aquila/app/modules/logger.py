@@ -27,7 +27,7 @@ class LoginLogger(TableView):
         super().__init__()
 
     def log(self, pid, action, ip):
-        self.insert({'player_id': pid, 'action': action, 'ip': ip, 'date': now()}
+        self.insert({'player_id': pid, 'action': action, 'ip': ip, 'date': now()})
 
     def log_login(self, pid, ip):
         self.log(pid, 'login', ip)
