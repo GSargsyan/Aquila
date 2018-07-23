@@ -1,0 +1,4 @@
+AJAX calls status definitions:
+status 1: Status Ok, returning response
+status 2: Player is not logged in
+status 3: Failed to load current round

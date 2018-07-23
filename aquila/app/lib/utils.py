@@ -1,5 +1,7 @@
 import pprint
 import time                                                
+import random
+import string
 from datetime import datetime
 
 from passlib.hash import pbkdf2_sha256
@@ -55,3 +57,11 @@ def timeit(method):
         print('%r (%r, %r) %2.5f sec' % (method.__name__, args, kw, te-ts))
         return result
     return timed
+
+def random_alphanum(length, not_in={}):
+    while True:
+        x = ''.join(random.choice(string.ascii_uppercase + \
+                string.ascii_lowercase + string.digits) \
+                for _ in range(length))
+        if x not in not_in:
+            return x

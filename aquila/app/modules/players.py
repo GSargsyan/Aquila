@@ -1,8 +1,9 @@
 from flask import request, session, g
 
 from app.lib.table_view import TableView
-from app.lib.utils import is_latin, throw_ve, now, hash_pwd, verify_pwd, pp
-from app import Countries, Levels, Rooms, LoginLogger, game_conf
+from app.lib.utils import is_latin, throw_ve, now, hash_pwd, verify_pwd, pp,\
+        random_alphanum
+from app import Countries, Levels, Rooms, LoginLogger, game_conf, sec_conf
 
 
 class Players(TableView):
@@ -39,6 +40,7 @@ class Players(TableView):
 
     def _session_login(self, pid):
         session['pid'] = pid
+        session.permanent = True
         g.player = self.find_by_id(session['pid'])
 
     def login_player(self, uname, pwd):
@@ -88,9 +90,13 @@ class Players(TableView):
         vals['username'] = uname
         vals['password'] = hash_pwd(pwd)
 
+        tokens_res = self.all(['token'])
+        tokens_set = {rec.token for rec in tokens_res}
+        vals['token'] = random_alphanum(sec_conf['token_len'], tokens_set)
+
         pid = self.insert(vals, ret='id')
         self._session_login(pid)
-        LoginLogger.log_login(player.id)
+        LoginLogger.log_login(pid)
 
     def remove_afks(self):
         afks = self.all(['id', 'room_id'],
@@ -158,6 +164,9 @@ class Player(TableView):
     def get_balance(self):
         return g.player.balance if self.are_bets_real() \
                 else g.player.demo_balance
+
+    def get_token(self):
+        return self.find_by_id(g.player.id, ['token']).token
 
 
 class PlayerRelations:

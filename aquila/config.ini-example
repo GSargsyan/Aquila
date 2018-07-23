@@ -1,0 +1,18 @@
+[db]
+host =
+name =
+user =
+pass =
+
+[security]
+pass_rounds = 30000
+salt_size = 10
+token_len = 16
+session_key =
+
+[game]
+initial_demo_bal = 10
+player_timeout = 30
+rounds_interval = 20
+bet_timeout = 2
+max_anim_time = 5

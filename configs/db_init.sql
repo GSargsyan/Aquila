@@ -31,6 +31,7 @@ CREATE TABLE players (
 	id SERIAL PRIMARY KEY,
 	username TEXT,
 	password TEXT,
+	token TEXT,
 	balance BIGINT,
 	demo_balance INT,
 	level_id SMALLINT REFERENCES levels,

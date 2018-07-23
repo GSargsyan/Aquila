@@ -1,4 +1,6 @@
+import json
 from configparser import ConfigParser
+from functools import wraps
 
 from flask import Flask, redirect, url_for, request, g, session
 from uwsgidecorators import timer, postfork
@@ -16,6 +18,7 @@ game_conf = dict(config.items('game'))
 
 sec_conf['pass_rounds'] = int(sec_conf['pass_rounds'])
 sec_conf['salt_size'] = int(sec_conf['salt_size'])
+sec_conf['token_len'] = int(sec_conf['token_len'])
 
 game_conf['max_anim_time'] = int(game_conf['max_anim_time'])
 game_conf['rounds_interval'] = int(game_conf['rounds_interval'])
@@ -43,8 +46,12 @@ from app.modules.rounds import Rounds
 Rounds = Rounds()
 from app.modules.bets import Bets
 Bets = Bets()
-from app.router import router
-app.register_blueprint(router)
+
+
+@postfork
+def db_reconnect():
+    global db
+    db.reconnect()
 
 
 @timer(2, target='mule')
@@ -70,25 +77,32 @@ def checkup_rooms(signal):
         Rounds.end_round(rnd.id)
         Bets.commit_round_bets(rnd.id)
 
-
 REQ_AUTH_URLS = ('/game')
 
+
 def authorize():
-    if 'pid' in session:
+    if Player.is_logged_in():
         g.player = Players.find_by_id(session['pid'])
         return True
-
     if request.path in REQ_AUTH_URLS:
         return False
-
     return True
 
-@postfork
-def db_reconnect():
-    global db
-    db.reconnect()
 
 @app.before_request
 def before_request():
     if not authorize():
         return redirect(url_for('router.home'))
+
+
+def pre_ajax(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not Player.is_logged_in():
+            return json.dumps({'status': 2})
+        return f(*args, **kwargs)
+    return wrapper
+
+
+from app.router import router
+app.register_blueprint(router)

@@ -1,6 +1,5 @@
 <html>
 	<head>
-
 	<meta charset="UTF-8">
 		<link rel=stylesheet type=text/css
 			href="{{ url_for('static', filename='style.css') }}">
@@ -13,31 +12,30 @@
 		{% if room_id %}
 		<p>You joined room: {{ room_id }}</p>
 		{% endif %}
-		<br><br>
+		<br>
 		<h3>Balance: {{ balance }}<h3>
-		<br><br>
+		<br>
 		<div>
 			<span>Till starting: </span>
 			<span id="till-round-start">0</span>
 		</div>
-		<br><br>
+		
+		<script type="text/javascript"
+			src="{{ url_for('static', filename='game.js') }}"></script>
+
+		<br>
 		<div>
 			<p>Board</p>
 			{% for n in range(37) %}
 			<input id="str-{{ n }}" type="button" value="{{ n }}">
 			{% endfor %}
-			<br><br>
+			<br>
 			<input id="red" type="button" value="red">
 			<input id="black" type="button" value="black">
 		</div>
-		<br><br><br><br>
+		<br><br>
 		<div>
 			{% include 'chat.html' %}
 		</div>
 	</body>
-	<script type="text/javascript"
-		src="{{ url_for('static', filename='game.js') }}"></script>
-	</body>
-	<script type="text/javascript"
-		src="{{ url_for('static', filename='game.js') }}"></script>
 </html>
