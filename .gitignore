@@ -4,3 +4,4 @@ __pycache__/
 *.sw[po]
 
 aquila/config.ini
+chat/node_modules
