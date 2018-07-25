@@ -23,8 +23,8 @@ class TableView(DataView):
     def update_by_id(self, values, item_id):
         return self.update(values, 'id=%(item_id)s', {'item_id': item_id})
 
-    def select_page(self, fields=['*'], where='', values={}, group_by='', order_by='',
-                    limit=10, page=1, count=False):
+    def select_page(self, fields=['*'], where='', values={}, group_by='',
+                    order_by='', limit=10, page=1, count=False):
 
         return self.select(fields, where, values, group_by, order_by, limit,
-                          (int(page) - 1) * int(limit), count=count)
+                           (int(page) - 1) * int(limit), count=count)

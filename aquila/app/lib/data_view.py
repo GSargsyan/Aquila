@@ -91,8 +91,8 @@ class DataView(object):
     # @throws Exception         on query fail
     # @return object            query result
     #
-    def select(self, fields=['*'], where='', values={}, group_by='', order_by='',
-               limit=-1, offset=-1, count=False):
+    def select(self, fields=['*'], where='', values={}, group_by='',
+               order_by='', limit=-1, offset=-1, count=False):
 
         query_tail = []
         if len(group_by) > 0:
@@ -188,8 +188,8 @@ class DataView(object):
     def update_by_existing(self, values, where=True, condition={}):
         field_list = ', '.join([k + '=' + v for k, v in values.items()])
         values = {**values, **condition}
-        self.link.execute(self.link.update % \
-                (self.table_name, field_list, where), values)
+        self.link.execute(self.link.update %
+                          (self.table_name, field_list, where), values)
 
     #
     # SQL delete function
@@ -214,13 +214,13 @@ class DataView(object):
     # Select all records
     #
     # @param  string    where      query conditions, eg. id=%(id)s
-    # @param  dict      values     dictionary of condition values, eg. {"id": 1}
+    # @param  dict      values     dictionary of condition values
     # @param  string    group_by   query expression
     # @param  string    order_by   query expression
     # @return list                 list of records
     #
-    def all(self, fields=['*'], where='', values={}, group_by='', order_by='', limit=-1,
-            offset=-1):
+    def all(self, fields=['*'], where='', values={},
+            group_by='', order_by='', limit=-1, offset=-1):
         all = self.select(fields, where, values, group_by, order_by, limit,
                           offset).fetchall()
         self.clear()

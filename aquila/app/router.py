@@ -1,24 +1,27 @@
 import json
 
-from flask import Blueprint, render_template, request, redirect, url_for, g, session
+from flask import Blueprint, render_template, request, redirect, url_for, g,\
+    session
 from app.modules.exceptions import ValidationError
-from app.lib.utils import now, pp, secs_passed
-from app import Players, Player, Rounds, Rooms, Bets, game_conf, pre_ajax
+from app.lib.utils import now, secs_passed
+from app import Players, Player, Rounds, Bets, game_conf, pre_ajax
 
 router = Blueprint('router', __name__,
-        template_folder='templates')
+                   template_folder='templates')
 
 # --- FUNCTIONS RETURNING HTML --- #
+
 
 @router.route('/home')
 def home():
     return render_template('home.html')
 
+
 @router.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
-    
+
     # request.method == 'POST'
     uname = request.form['username']
     pwd = request.form['password']
@@ -45,9 +48,10 @@ def register():
 def game():
     room_id = Player.join_some_room()
     balance = Player.get_balance()
-    return render_template('game.html', room_id=room_id, balance=Player.get_balance())
+    return render_template('game.html', room_id=room_id, balance=balance)
 
 # --- FUNCTIONS FOR AJAX CALLS --- #
+
 
 @router.route('/checkup', methods=['POST'])
 @pre_ajax
@@ -69,7 +73,7 @@ def checkup():
 @router.route('/bet', methods=['POST'])
 @pre_ajax
 def bet():
-    bets = json.loads(request.json) # bet_type: amount key values
+    bets = json.loads(request.json)  # bet_type: amount key values
     rnd = Rounds.current_by_room_id(g.player.room_id)
     if rnd is None:
         return json.dumps({'status': 3})

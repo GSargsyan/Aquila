@@ -77,6 +77,7 @@ def checkup_rooms(signal):
         Rounds.end_round(rnd.id)
         Bets.commit_round_bets(rnd.id)
 
+
 REQ_AUTH_URLS = ('/game')
 
 

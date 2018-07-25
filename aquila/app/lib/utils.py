@@ -1,5 +1,5 @@
 import pprint
-import time                                                
+import time
 import random
 import string
 from datetime import datetime
@@ -26,7 +26,7 @@ def throw_ve(msg):
 
 def hash_pwd(pwd):
     return pbkdf2_sha256.using(rounds=sec_conf['pass_rounds'],
-            salt_size=sec_conf['salt_size']).hash(pwd)
+                               salt_size=sec_conf['salt_size']).hash(pwd)
 
 
 def verify_pwd(pwd, hashed):
@@ -58,10 +58,12 @@ def timeit(method):
         return result
     return timed
 
+
 def random_alphanum(length, not_in={}):
     while True:
-        x = ''.join(random.choice(string.ascii_uppercase + \
-                string.ascii_lowercase + string.digits) \
-                for _ in range(length))
+        x = ''.join(random.choice(string.ascii_uppercase +
+                                  string.ascii_lowercase +
+                                  string.digits)
+                    for _ in range(length))
         if x not in not_in:
             return x
