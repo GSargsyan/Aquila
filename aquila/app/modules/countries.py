@@ -8,4 +8,11 @@ class Countries(TableView):
         self.table_name = 'countries'
 
     def iso2_from_ip(self, ip):
+        """ Convert IPv4 to country code
+
+        Returns
+        -------
+        str
+            ISO-2 code of the country
+        """
         return geocoder.ip(ip).country

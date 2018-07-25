@@ -60,7 +60,7 @@ def checkup_rooms(signal):
     Players.remove_afks()
 
     # Run all non-empty rooms, that are not running
-    awaiting = Rooms.run_awaiting()
+    Rooms.run_awaiting()
 
     # Close all empty rooms
     Rooms.close_empty()

@@ -11,7 +11,7 @@ from app.modules.exceptions import ValidationError
 
 
 def pp(obj, indent=4):
-    """ Pretty printer with indents """
+    """ Pretty printer with indents for debugging purposes """
     p = pprint.PrettyPrinter(indent=indent)
     p.pprint(obj)
 
@@ -46,10 +46,14 @@ def now():
 
 
 def secs_passed(d):
+    """ Seconds passed between now() and datetime d """
     return (now() - d).total_seconds()
 
 
 def timeit(method):
+    """ Decorator function to measure
+    how much time did the function spend
+    """
     def timed(*args, **kw):
         ts = time.time()
         result = method(*args, **kw)
@@ -60,6 +64,9 @@ def timeit(method):
 
 
 def random_alphanum(length, not_in={}):
+    """ Generate random alphanumeric string of length - 'length'
+    that is not included in 'not_in' set
+    """
     while True:
         x = ''.join(random.choice(string.ascii_uppercase +
                                   string.ascii_lowercase +

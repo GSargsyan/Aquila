@@ -91,7 +91,7 @@ class Players(TableView):
         return True
 
     def validate_uname(self, uname):
-        """ Check new username to be valid in length and charset.
+        """ Check new username to be in valid format.
 
         Parameters
         ----------
@@ -118,7 +118,7 @@ class Players(TableView):
             throw_ve('Another user with the same username already exists.')
 
     def validate_pwd(self, pwd):
-        """ Check new password to be valid in length and charset.
+        """ Check new password to be in valid format.
 
         Parameters
         ----------
@@ -154,7 +154,7 @@ class Players(TableView):
         Raises
         ------
         ValidationError
-            If the password and/or the username are not valid.
+            If the password and/or the username are not in valid format.
         """
         self.validate_uname(uname)
         self.validate_pwd(pwd)
@@ -293,7 +293,7 @@ class Player(TableView):
         Returns
         -------
         int
-            Token of the player
+            Randomly generated token of the player
         """
         return self.find_by_id(g.player.id, ['token']).token
 

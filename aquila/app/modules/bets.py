@@ -3,6 +3,8 @@ from app import Players, Rounds
 
 
 class Bets(TableView):
+    # BET_TYPES in format
+    # {'bet_type': (set_of_winning_vals, payout_coefficient)}
     BET_TYPES = {
         'red': ({1, 3, 5, 7, 9, 12, 14, 16, 18, 19,
                  21, 23, 25, 27, 30, 32, 34, 36}, 2),
@@ -145,6 +147,19 @@ class Bets(TableView):
         super().__init__()
 
     def insert_bets(self, bets, pid, round_id, is_real):
+        """ Insert bet into 'bets' table
+
+        Parameters
+        ----------
+        bets : dict
+            Dict of bet type: bet amount pairs
+        pid : int
+            Player's id the did the bets
+        round_id : int
+            Round id during which player bet
+        is_real : bool
+            If True balance is used, if False - demo_balance
+        """
         for bet_type, amount in bets.items():
             if bet_type not in self.BET_TYPES:
                 continue
@@ -160,6 +175,14 @@ class Bets(TableView):
             self.insert(vals)
 
     def commit_round_bets(self, round_id):
+        """ Get all bets of the round and commit them,
+        changing player's balance and bet stats
+
+        Parameters
+        ----------
+        round_id : int
+            Round id whose bets are going to be committed
+        """
         rnd = Rounds.find_by_id(round_id, ['id, outcome'])
         bets = self.all_by_field('round_id', rnd.id)
         for bet in bets:
@@ -182,6 +205,13 @@ class Bets(TableView):
             Players.change_bet_stats(bet.player_id, bet.amount, won)
 
     def type_info(self, bet_type):
+        """ Return bet type  info from BET_TYPES by keywords
+
+        Returns
+        -------
+        dict
+            Dict containg 'winning_vals' and 'payout' keys
+        """
         if self.BET_TYPES.get(bet_type, None) is None:
             return None
         return {'winning_vals': self.BET_TYPES[bet_type][0],
